@@ -1,0 +1,1 @@
+mysqldump -u root -p mysql help_keyword --where="help_keyword_id<100" > mysql_keyword_100.sql
