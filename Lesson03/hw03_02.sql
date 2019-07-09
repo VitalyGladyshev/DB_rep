@@ -15,3 +15,9 @@ INSERT INTO users (id, name, created_at, updated_at) VALUES (3, 'Ниолай', 
 INSERT INTO users (id, name, created_at, updated_at) VALUES (4, 'Вячеслав', '20.01.2018 11:10', '20.10.2018 12:10');
 
 SELECT * FROM users;
+
+SELECT  DATE_FORMAT(STR_TO_DATE('20.10.2017 8:10', '%d.%m.%Y %h:%i'), '%Y-%m-%d %h:%i');
+
+UPDATE users SET created_at = DATE_FORMAT(STR_TO_DATE(created_at, '%d.%m.%Y %h:%i'), '%Y-%m-%d %h:%i');
+UPDATE users SET updated_at = DATE_FORMAT(STR_TO_DATE(updated_at, '%d.%m.%Y %h:%i'), '%Y-%m-%d %h:%i');
+ALTER TABLE users MODIFY created_at DATETIME;
