@@ -2,7 +2,7 @@ CREATE DATABASE hw03_03;
 
 USE hw03_03;
 
-DROP TABLE storehouses_products;
+DROP TABLE IF EXISTS storehouses_products;
 CREATE TABLE IF NOT EXISTS storehouses_products (
 	id SERIAL PRIMARY KEY,
     value INT UNSIGNED NOT NULL DEFAULT 0
@@ -18,9 +18,9 @@ VALUES
 	(500),
 	(1);
 
-SELECT value FROM storehouses_products WHERE value > 0 ORDER BY value;
-SELECT COUNT(value) FROM storehouses_products;
-(SELECT value FROM storehouses_products WHERE value > 0 ORDER BY value LIMIT (SELECT COUNT(value) FROM storehouses_products))
+SET @row_count = NULL;
+SELECT @row_count := COUNT(*) FROM storehouses_products;
+
+(SELECT value FROM storehouses_products WHERE value > 0 ORDER BY value LIMIT 999999)
 UNION ALL
 SELECT value FROM storehouses_products WHERE value = 0;
-
