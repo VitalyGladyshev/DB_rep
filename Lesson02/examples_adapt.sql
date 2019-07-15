@@ -21,10 +21,10 @@ CREATE TABLE IF NOT EXISTS profiles (
   user_id INT UNSIGNED NOT NULL PRIMARY KEY,
   sex CHAR(1) NOT NULL,
   birthday DATE,
-  hometown VARCHAR(100),
-  photo_id INT UNSIGNED NOT NULL,
-  CONSTRAINT profiles_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id),
-  CONSTRAINT profiles_photo_id_fk FOREIGN KEY (photo_id) REFERENCES media(id) 
+  hometown VARCHAR(100) DEFAULT 'Москва',
+  photo_id INT UNSIGNED NOT NULL DEFAULT 1,
+  CONSTRAINT profiles_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id)
+  -- CONSTRAINT profiles_photo_id_fk FOREIGN KEY (photo_id) REFERENCES media(id) 
 );
 
 -- Таблица сообщений
@@ -111,17 +111,19 @@ CREATE TABLE IF NOT EXISTS albums_photos (
 );
 
 -- Таблица лайков
+-- DROP TABLE likes;
 CREATE TABLE IF NOT EXISTS likes (
   from_user_id INT UNSIGNED NOT NULL,
   to_subject_id INT UNSIGNED NOT NULL,
   subject_type_id INT UNSIGNED NOT NULL,
   created_at DATETIME DEFAULT NOW(),
-  PRIMARY KEY (from_user_id, to_subject_id, subject_type_id),
+  PRIMARY KEY (from_user_id, to_subject_id, subject_type_id, created_at),
   CONSTRAINT likes_from_user_id_fk FOREIGN KEY (from_user_id) REFERENCES users(id),
   CONSTRAINT likes_subject_type_id_fk FOREIGN KEY (subject_type_id) REFERENCES subject_types(id)
 );
 
 -- Таблица типов сущностей, для которых можно поставить лайк
+-- DROP TABLE subject_types;
 CREATE TABLE IF NOT EXISTS subject_types (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) UNIQUE,
