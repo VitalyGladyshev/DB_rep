@@ -106,3 +106,17 @@ COMMIT;
 SELECT * FROM users;
 
 -- Задача 6.2
+USE shop;
+
+CREATE OR REPLACE VIEW prod_cat AS 
+  SELECT 
+    name AS prod_name, 
+    (SELECT name FROM catalogs WHERE catalogs.id = products.catalog_id) AS cat_name
+  FROM 
+    products;
+SELECT * FROM prod_cat;
+
+-- Задача 6.3
+
+-- Задача 6.4
+
