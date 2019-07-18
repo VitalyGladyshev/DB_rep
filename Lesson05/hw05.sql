@@ -117,6 +117,59 @@ CREATE OR REPLACE VIEW prod_cat AS
 SELECT * FROM prod_cat;
 
 -- Задача 6.3
+CREATE TEMPORARY TABLE IF NOT EXISTS date_tmp(
+	date_at DATE
+);
+SHOW TABLES;
+DESCRIBE date_tmp;
 
+TRUNCATE TABLE date_tmp;
+
+INSERT INTO date_tmp
+	(date_at)
+VALUES
+	(STR_TO_DATE('2018-08-01', '%Y-%m-%d')),
+    (STR_TO_DATE('2018-08-04', '%Y-%m-%d')),
+    (STR_TO_DATE('2018-08-16', '%Y-%m-%d')),
+    (STR_TO_DATE('2018-08-17', '%Y-%m-%d'));
+SELECT * FROM date_tmp;
+
+DROP TABLE august_tmp;
+CREATE TEMPORARY TABLE IF NOT EXISTS august_tmp(
+	date_at DATE,
+    mark INT(8) NOT NULL DEFAULT 0
+);
+
+TRUNCATE TABLE august_tmp;
+
+/*INSERT INTO august_tmp
+	(date_at)
+VALUES
+	(@date_cnt := DATE_ADD(@date_cnt, INTERVAL 1 DAY));	warning1287	*/
+
+DROP PROCEDURE august_proc;
+DELIMITER //
+CREATE PROCEDURE august_proc()
+	BEGIN
+	SET @date_cnt := '2018-08-01';
+	WHILE MONTH(@date_cnt) = 8 DO
+		IF (SELECT 1 FROM date_tmp WHERE date_tmp.date_at = @date_cnt) = 1 THEN
+			SET @tmp := 1;
+		ELSE
+			SET @tmp := 0;
+		END IF;
+        INSERT INTO august_tmp
+			(date_at, mark)
+		VALUES
+			(@date_cnt, @tmp);
+		SET @date_cnt := DATE_ADD(@date_cnt, INTERVAL 1 DAY);
+	END WHILE;
+END // 
+
+CALL august_proc();
+SELECT * FROM august_tmp;
+    
+-- WHERE (BETWEEN CAST('2018-08-01' AS DATE) AND CAST('2018-08-31' AS DATE));
+    
 -- Задача 6.4
 
