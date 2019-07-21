@@ -140,6 +140,7 @@ INSERT INTO profiles (user_id, sex, birthday) VALUES (16, 'f', '1999.10.20');
 INSERT INTO profiles (user_id, sex, birthday) VALUES (17, 'f', '2001.10.20');
 INSERT INTO profiles (user_id, sex, birthday) VALUES (18, 'f', '2003.10.20');
 SELECT * FROM profiles;
+DESCRIBE profiles;
 
 SELECT 
 	CONCAT(lastname, ' ', firstname) AS name, 
@@ -208,4 +209,6 @@ INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (15, 6, 
 INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (16, 7, 2);
 INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (17, 8, 2);
 INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (18, 9, 2);
+INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (1, 16, 2);
 SELECT * FROM likes;
+DESCRIBE likes;
