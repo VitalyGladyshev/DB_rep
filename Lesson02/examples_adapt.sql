@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Таблица профилей
--- DROP TABLE profiles;
+DROP TABLE profiles;
 CREATE TABLE IF NOT EXISTS profiles (
   user_id INT UNSIGNED NOT NULL PRIMARY KEY,
   sex CHAR(1) NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS albums_photos (
 );
 
 -- Таблица лайков
--- DROP TABLE likes;
+DROP TABLE likes;
 CREATE TABLE IF NOT EXISTS likes (
   from_user_id INT UNSIGNED NOT NULL,
   to_subject_id INT UNSIGNED NOT NULL,

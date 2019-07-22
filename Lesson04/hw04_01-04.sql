@@ -95,12 +95,31 @@ INSERT INTO users (id, firstname, lastname, email) VALUES (17, 'Вероника
 INSERT INTO users (id, firstname, lastname, email) VALUES (18, 'Елизавета', 'Сидорова', 'asf@mail.ru');
 SELECT * FROM users;
 
+TRUNCATE messages;
 INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (1, 2, 'mess_text', TRUE, TRUE, '2018.10.20 9:10');
 INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (2, 1, 'mess_text', TRUE, TRUE, '2018.10.20 9:11');
 INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (3, 1, 'mess_text', TRUE, TRUE, '2018.10.20 9:12');
 INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (2, 1, 'mess_text', TRUE, TRUE, '2018.10.20 9:13');
 INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (2, 1, 'mess_text', TRUE, TRUE, '2018.10.20 9:14');
 INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (2, 1, 'mess_text', TRUE, TRUE, '2018.10.20 9:15');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (1, 2, 'mess_text', TRUE, TRUE, '2018.10.20 9:16');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (2, 3, 'mess_text', TRUE, TRUE, '2018.10.20 9:17');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (3, 1, 'mess_text', TRUE, TRUE, '2018.10.20 9:18');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (4, 5, 'mess_text', TRUE, TRUE, '2018.10.20 9:19');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (5, 6, 'mess_text', TRUE, TRUE, '2018.10.20 9:20');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (6, 7, 'mess_text', TRUE, TRUE, '2018.10.20 9:21');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (7, 4, 'mess_text', TRUE, TRUE, '2018.10.20 9:22');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (8, 2, 'mess_text', TRUE, TRUE, '2018.10.20 9:23');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (9, 1, 'mess_text', TRUE, TRUE, '2018.10.20 9:24');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (1, 5, 'mess_text', TRUE, TRUE, '2018.10.20 9:25');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (2, 4, 'mess_text', TRUE, TRUE, '2018.10.20 9:26');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (3, 1, 'mess_text', TRUE, TRUE, '2018.10.20 9:27');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (4, 5, 'mess_text', TRUE, TRUE, '2018.10.20 9:28');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (5, 6, 'mess_text', TRUE, TRUE, '2018.10.20 9:29');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (6, 7, 'mess_text', TRUE, TRUE, '2018.10.20 9:30');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (7, 8, 'mess_text', TRUE, TRUE, '2018.10.20 9:31');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (2, 3, 'mess_text', TRUE, TRUE, '2018.10.20 9:32');
+INSERT INTO messages (from_user_id, to_user_id, body, important, delivered, created_at) VALUES (2, 1, 'mess_text', TRUE, TRUE, '2018.10.20 9:33');
 
 INSERT INTO profiles (user_id, sex, birthday) VALUES (1, 'm', '1986.10.20');
 INSERT INTO profiles (user_id, sex, birthday) VALUES (2, 'm', '1988.10.20');
@@ -121,6 +140,7 @@ INSERT INTO profiles (user_id, sex, birthday) VALUES (16, 'f', '1999.10.20');
 INSERT INTO profiles (user_id, sex, birthday) VALUES (17, 'f', '2001.10.20');
 INSERT INTO profiles (user_id, sex, birthday) VALUES (18, 'f', '2003.10.20');
 SELECT * FROM profiles;
+DESCRIBE profiles;
 
 SELECT 
 	CONCAT(lastname, ' ', firstname) AS name, 
@@ -189,4 +209,6 @@ INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (15, 6, 
 INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (16, 7, 2);
 INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (17, 8, 2);
 INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (18, 9, 2);
+INSERT INTO likes (from_user_id, to_subject_id, subject_type_id) VALUES (1, 16, 2);
 SELECT * FROM likes;
+DESCRIBE likes;
