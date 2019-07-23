@@ -36,6 +36,29 @@ SELECT hello();
 того, чтобы одно из этих полей или оба поля были заполнены. При попытке присвоить полям
 NULL-значение необходимо отменить операцию.*/
 
+USE shop;
+
+DELIMITER //
+
+CREATE TRIGGER name_description_insert_control BEFORE INSERT ON products
+FOR EACH ROW
+BEGIN
+  SET NEW.total = NEW.processor + NEW.mother + NEW.memory;
+END//
+
+CREATE TRIGGER name_description_insert_control BEFORE UPDATE ON products
+FOR EACH ROW
+BEGIN
+  SET NEW.total = NEW.processor + NEW.mother + NEW.memory;
+END//
+
+DELIMITER ;
+
+INSERT INTO products
+  (processor, mother, memory)
+VALUES
+  (7890.00, 5060.00, 4800.00);
+
 -- Задача 3
 /*3. (по желанию) Напишите хранимую функцию для вычисления произвольного числа Фибоначчи.
 Числами Фибоначчи называется последовательность в которой число равно сумме двух
