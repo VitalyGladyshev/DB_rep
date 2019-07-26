@@ -1,0 +1,6 @@
+db.shop.insert({catalog: 'Процессоры'})
+db.shop.insert({catalog: 'Материнские платы'})
+
+db.shop.update({catalog: 'Процессоры'}, {$set: {product: {name: 'Intel Core i3-8100', desription: 'Процессор на платформе Intel', price: 7890.00}}})
+db.shop.update({catalog: 'Процессоры'}, {$set: {product: {name: 'AMD FX-8320E', desription: 'Процессор на платформе AMD', price: 4780.00}}})
+db.shop.update({catalog: 'Материнские платы'}, {$set: {product: {name: 'ASUS ROG MAXIMUS X HERO', desription: 'Материнская плата ASUS ROG MAXIMUS X HERO, Z370, Socket 1151-V2, DDR4, ATX', price: 19310.00}}})
