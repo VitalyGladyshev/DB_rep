@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS clientele(
 	stock_acc BIGINT UNSIGNED UNIQUE,		-- brokerage account for stock market
     deriv_acc BIGINT UNSIGNED UNIQUE,			-- derivatives market
     curr_acc BIGINT UNSIGNED UNIQUE,			-- currency market
-    ii_stock_acc BIGINT UNSIGNED UNIQUE,	-- individual investment account - ИИС
-    ii_deriv_acc BIGINT UNSIGNED UNIQUE,		-- ИИС derivatives market
-    ii_curr_acc BIGINT UNSIGNED UNIQUE,			-- ИИС currency market
+    -- ii_stock_acc BIGINT UNSIGNED UNIQUE,	-- individual investment account - ИИС
+    -- ii_deriv_acc BIGINT UNSIGNED UNIQUE,		-- ИИС derivatives market
+    -- ii_curr_acc BIGINT UNSIGNED UNIQUE,			-- ИИС currency market
     bank_account BIGINT UNSIGNED UNIQUE,
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS profiles(
 	CONSTRAINT profiles_client_id_fk FOREIGN KEY (client_id) REFERENCES clientele(id)
 );
 
--- Таблица брокерских и ИИС счетов
+-- Таблица брокерских счетов
 CREATE TABLE IF NOT EXISTS brokerage_accounts(
 	stock_acc SERIAL PRIMARY KEY,
     ind_inv BOOL,
@@ -47,8 +47,7 @@ CREATE TABLE IF NOT EXISTS brokerage_accounts(
     cash BIGINT,
     updated_at DATETIME DEFAULT NOW() ON UPDATE NOW(),
     leverage BOOL,
-    CONSTRAINT brokerage_accounts_stock_acc_fk FOREIGN KEY (stock_acc) REFERENCES clientele(stock_acc),
-    CONSTRAINT ii_brokerage_accounts_stock_acc_fk FOREIGN KEY (stock_acc) REFERENCES clientele(ii_stock_acc)
+    CONSTRAINT brokerage_accounts_stock_acc_fk FOREIGN KEY (stock_acc) REFERENCES clientele(stock_acc)
 );
 
 -- Таблица счетов срочного рынка
@@ -60,8 +59,7 @@ CREATE TABLE IF NOT EXISTS derivatives_accounts(
     updated_at DATETIME DEFAULT NOW() ON UPDATE NOW(),
     leverage BOOL,
     coverage INT,
-    CONSTRAINT derivatives_accounts_deriv_acc_fk FOREIGN KEY (deriv_acc) REFERENCES clientele(deriv_acc),
-    CONSTRAINT ii_derivatives_accounts_deriv_acc_fk FOREIGN KEY (deriv_acc) REFERENCES clientele(ii_deriv_acc)
+    CONSTRAINT derivatives_accounts_deriv_acc_fk FOREIGN KEY (deriv_acc) REFERENCES clientele(deriv_acc)
 );
 
 -- Таблица счетов валютного рынка
@@ -71,8 +69,7 @@ CREATE TABLE IF NOT EXISTS currency_accounts(
     active_stat BOOL,
     updated_at DATETIME DEFAULT NOW() ON UPDATE NOW(),
     leverage BOOL,
-    CONSTRAINT currency_accounts_curr_acc_fk FOREIGN KEY (curr_acc) REFERENCES clientele(curr_acc),
-    CONSTRAINT ii_currency_accounts_curr_acc_fk FOREIGN KEY (curr_acc) REFERENCES clientele(ii_curr_acc)
+    CONSTRAINT currency_accounts_curr_acc_fk FOREIGN KEY (curr_acc) REFERENCES clientele(curr_acc)
 );
 
 -- Таблица сделок фондового рынка
