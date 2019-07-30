@@ -75,9 +75,9 @@ CREATE TABLE IF NOT EXISTS currency_accounts(
 -- Таблица сделок фондового рынка
 DROP TABLE stock_market;
 CREATE TABLE IF NOT EXISTS stock_market(
-	stock_acc BIGINT UNSIGNED UNIQUE,
+	stock_acc BIGINT UNSIGNED,
     sm_security INT UNSIGNED NOT NULL,
-    volume INT UNSIGNED NOT NULL,
+    volume INT NOT NULL,	-- отрицательный volume это продажа
     income DATETIME,
     unit_price INT NOT NULL,
     PRIMARY KEY (stock_acc, sm_security, income),
@@ -88,9 +88,9 @@ CREATE TABLE IF NOT EXISTS stock_market(
 -- Таблица сделок срочного рынка
 DROP TABLE derivatives_market;
 CREATE TABLE IF NOT EXISTS derivatives_market(
-	deriv_acc BIGINT UNSIGNED UNIQUE,
+	deriv_acc BIGINT UNSIGNED,
     dm_security INT UNSIGNED NOT NULL,
-    volume INT UNSIGNED NOT NULL,
+    volume INT NOT NULL,	-- отрицательный volume это продажа
     income DATETIME,
     unit_price INT NOT NULL,
     PRIMARY KEY (deriv_acc, dm_security, income),
@@ -101,9 +101,9 @@ CREATE TABLE IF NOT EXISTS derivatives_market(
 -- Таблица сделок валютного рынка
 DROP TABLE currency_market;
 CREATE TABLE IF NOT EXISTS currency_market(
-	curr_acc BIGINT UNSIGNED UNIQUE,
+	curr_acc BIGINT UNSIGNED,
     currency INT UNSIGNED NOT NULL,
-    volume INT UNSIGNED NOT NULL,
+    volume INT NOT NULL,	-- отрицательный volume это продажа
     income DATETIME,
     unit_price INT NOT NULL,
     PRIMARY KEY (curr_acc, currency, income),
