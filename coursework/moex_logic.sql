@@ -3,75 +3,204 @@
 представления (минимум 2)
 хранимые процедуры / триггеры*/
 
-DROP DATABASE moex;
-
 USE moex;
 
-CREATE TABLE `clientele`(
-	`id SERIAL` SERIAL PRIMARY KEY,
-	`stock_acc` BIGINT UNSIGNED UNIQUE,
-    `deriv_acc` BIGINT UNSIGNED UNIQUE,
-    `curr_acc` BIGINT UNSIGNED UNIQUE,
-    `ii_stock_acc` BIGINT UNSIGNED UNIQUE,
-    `ii_deriv_acc` BIGINT UNSIGNED UNIQUE,
-    `ii_curr_acc` BIGINT UNSIGNED UNIQUE,
-    `bank_account` BIGINT UNSIGNED UNIQUE,
-	`created_at` DATETIME DEFAULT NOW(),
-	`updated_at` DATETIME DEFAULT NOW() ON UPDATE NOW()
-);
+-- Представление - операции на фондовом рынке
+CREATE VIEW stock_market_ex AS
+SELECT 
+    stock_market.stock_acc,
+    CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
+    stock_market_securities.stock_security_code AS security,
+    operation_type(stock_market.buy) AS operation, 
+    CAST(stock_market.price AS DECIMAL(18,4)) AS price,
+    stock_market.income
+FROM 
+	stock_market 
+LEFT JOIN stock_market_securities
+ON stock_market.sm_security = stock_market_securities.stock_security_id
+LEFT JOIN clientele
+ON stock_market.stock_acc = clientele.stock_acc
+LEFT JOIN profiles
+ON profiles.client_id = clientele.id  
+ORDER BY 
+	stock_market.income;
 
-CREATE TABLE `profiles`(
-	`client_id` SERIAL PRIMARY KEY,
-	`firstname` VARCHAR(50) NOT NULL,
-	`lastname` VARCHAR(50) NOT NULL,
-	`patronymic` VARCHAR(50) NOT NULL,	
-    `email` VARCHAR(120) NOT NULL UNIQUE,  
-	`sex` CHAR(1) NOT NULL,
-	`birthday` DATE,
-	`hometown` VARCHAR(100)
-);
+-- Представление - операции на срочном рынке
+CREATE VIEW derivatives_market_ex AS
+SELECT 
+    derivatives_market.deriv_acc,
+    CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
+    derivatives_market_securities.deriv_security_code AS security,
+    operation_type(derivatives_market.buy) AS operation, 
+    CAST(derivatives_market.price AS DECIMAL(18,4)) AS price,
+    derivatives_market.income
+FROM 
+	derivatives_market 
+LEFT JOIN derivatives_market_securities
+ON derivatives_market.dm_security = derivatives_market_securities.deriv_security_id
+LEFT JOIN clientele
+ON derivatives_market.deriv_acc = clientele.deriv_acc
+LEFT JOIN profiles
+ON profiles.client_id = clientele.id  
+ORDER BY 
+	derivatives_market.income;
 
-CREATE TABLE IF NOT EXISTS `brokerage_accounts`(
-	`stock_acc` SERIAL PRIMARY KEY,
-    `ind_inv` BOOL,
-    `active_stat` BOOL,
-    `cash` BIGINT,
-    `updated_at` DATETIME DEFAULT NOW() ON UPDATE NOW(),
-    `leverage` BOOL,
-	CONSTRAINT `brokerage_accounts_stock_acc_fk` FOREIGN KEY (`stock_acc`) REFERENCES `clientele`(`stock_acc`),
-);
+-- Представление - операции на валютном рынке
+CREATE VIEW currency_market_ex AS
+SELECT 
+    currency_market.curr_acc,
+    CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
+    currencies.currency_code AS security,
+    operation_type(currency_market.buy) AS operation,
+    CAST(currency_market.price AS DECIMAL(18,4)) AS price,
+    currency_market.income
+FROM 
+	currency_market 
+LEFT JOIN currencies
+ON currency_market.currency = currencies.currency_id
+LEFT JOIN clientele
+ON currency_market.curr_acc = clientele.curr_acc
+LEFT JOIN profiles
+ON profiles.client_id = clientele.id  
+ORDER BY 
+	currency_market.income;
 
-SET FOREIGN_KEY_CHECKS=1;
-INSERT INTO `clientele` VALUES 
-('1',1,'5132768160943622','4539865194523313',11,'4485411127196097','4699956129319','4539472477867','2016-05-29 20:28:02','2017-12-04 16:20:10'),
-('2',2,'6011174607214955','4024007105846',12,'4929801841140','4485293626278','5405263701791015','2000-08-05 17:08:47','2006-11-30 10:23:30'),
-('3',3,'5152794546900431','346849589866338',13,'4716067239837','5389675210506249','5292749199840242','1971-07-19 00:54:45','2017-09-27 18:33:16'),
-('4',4,'5452351160126677','345894160655763',14,'5529834567074326','6011833708569798','6011034091030513','2012-09-10 08:43:51','1986-01-08 05:46:11'),
-('5',5,'5410954211352940','4556122129141042',15,'373924495662674','6011235015855041','5486655049859971','1985-12-08 22:42:19','2005-01-06 12:01:37'),
-('6',6,'4716045742476609','4024007173964',16,'6011426929714902','6011744797688100','4024007136647','1979-11-18 14:38:37','1999-08-26 03:53:48'),
-('7',7,'4947412985650737','5479521355575331',17,'5215132289116295','5508170461363529','4539315594528','1981-07-11 22:37:45','1996-01-19 17:44:14'),
-('8',8,'4024007180006','4539756110199381',18,'4532013509943543','5101933783195570','5443018893746029','1971-10-03 07:28:17','1992-11-20 22:53:17'),
-('9',9,'4385043074318388','6011115367019591',19,'4485932341679','5292650192585875','4716083174425053','1996-01-01 02:59:15','2004-12-26 14:56:10'),
-('10',10,'5272303790906855','4929942480959',20,'5306410399875883','4916519122044648','5203883764941351','2001-04-05 07:07:49','1995-01-18 22:15:47');
+-- Представление - единая таблица всех операций
+CREATE VIEW summary_table AS
+SELECT 
+		stock_market.stock_acc,
+		CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
+		stock_market_securities.stock_security_code AS security,
+		operation_type(stock_market.buy) AS operation, 
+		CAST(stock_market.price AS DECIMAL(18,4)) AS price,
+		stock_market.income AS date
+	FROM 
+		stock_market 
+	LEFT JOIN stock_market_securities
+	ON stock_market.sm_security = stock_market_securities.stock_security_id
+	LEFT JOIN clientele
+	ON stock_market.stock_acc = clientele.stock_acc
+	LEFT JOIN profiles
+	ON profiles.client_id = clientele.id  
+UNION
+SELECT 
+		derivatives_market.deriv_acc,
+		CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
+		derivatives_market_securities.deriv_security_code AS security,
+		operation_type(derivatives_market.buy) AS operation, 
+		CAST(derivatives_market.price AS DECIMAL(18,4)) AS price,
+		derivatives_market.income  AS date
+	FROM 
+		derivatives_market 
+	LEFT JOIN derivatives_market_securities
+	ON derivatives_market.dm_security = derivatives_market_securities.deriv_security_id
+	LEFT JOIN clientele
+	ON derivatives_market.deriv_acc = clientele.deriv_acc
+	LEFT JOIN profiles
+	ON profiles.client_id = clientele.id  
+UNION
+SELECT 
+		currency_market.curr_acc,
+		CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
+		currencies.currency_code AS security,
+		operation_type(currency_market.buy) AS operation, 
+		CAST(currency_market.price AS DECIMAL(18,4)) AS price,
+		currency_market.income AS date
+	FROM 
+		currency_market 
+	LEFT JOIN currencies
+	ON currency_market.currency = currencies.currency_id
+	LEFT JOIN clientele
+	ON currency_market.curr_acc = clientele.curr_acc
+	LEFT JOIN profiles
+	ON profiles.client_id = clientele.id  
+	ORDER BY 
+		date;
 
-INSERT INTO `brokerage_accounts` VALUES 
-(1,FALSE,TRUE,100000,'2017-12-04 16:20:10',TRUE),
-(2,FALSE,TRUE,200000,'2006-11-30 10:23:30',FALSE),
-(3,FALSE,TRUE,300000,'2017-09-27 18:33:16',TRUE),
-(4,FALSE,TRUE,400000,'1986-01-08 05:46:11',FALSE),
-(5,FALSE,TRUE,500000,'2005-01-06 12:01:37',TRUE),
-(6,FALSE,TRUE,600000,'1999-08-26 03:53:48',FALSE),
-(7,FALSE,TRUE,700000,'1996-01-19 17:44:14',TRUE),
-(8,FALSE,TRUE,800000,'1992-11-20 22:53:17',FALSE),
-(9,FALSE,TRUE,900000,'2004-12-26 14:56:10',TRUE),
-(10,FALSE,TRUE,1000000,'1995-01-18 22:15:47',FALSE),
-(11,TRUE,TRUE,100000,'2017-12-04 16:20:10',TRUE),
-(12,TRUE,TRUE,200000,'2006-11-30 10:23:30',FALSE),
-(13,TRUE,TRUE,300000,'2017-09-27 18:33:16',TRUE),
-(14,TRUE,TRUE,400000,'1986-01-08 05:46:11',FALSE),
-(15,TRUE,TRUE,500000,'2005-01-06 12:01:37',TRUE),
-(16,TRUE,TRUE,600000,'1999-08-26 03:53:48',FALSE),
-(17,TRUE,TRUE,700000,'1996-01-19 17:44:14',TRUE),
-(18,TRUE,TRUE,800000,'1992-11-20 22:53:17',TRUE),
-(19,TRUE,TRUE,900000,'2004-12-26 14:56:10',FALSE),
-(20,TRUE,TRUE,1000000,'1995-01-18 22:15:47',TRUE);
+-- Номер счёта на фондовом рынке совершивший больше всех покупок
+SELECT 
+		stock_market.stock_acc, 
+		COUNT(*) AS cnt
+	FROM stock_market 
+	JOIN brokerage_accounts
+	ON stock_market.stock_acc = brokerage_accounts.stock_acc AND stock_market.buy = TRUE
+	GROUP BY stock_market.stock_acc
+	ORDER BY cnt DESC
+	LIMIT 1;
+
+-- Список клиентов упорядоченный по количеству продаж
+SELECT 
+		stock_market.stock_acc, 
+		CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client,
+		COUNT(*) AS cnt
+	FROM stock_market 
+	JOIN brokerage_accounts
+	ON stock_market.stock_acc = brokerage_accounts.stock_acc AND stock_market.buy = FALSE
+	LEFT JOIN clientele
+	ON stock_market.stock_acc = clientele.stock_acc
+	LEFT JOIN profiles
+	ON profiles.client_id = clientele.id 
+	GROUP BY stock_market.stock_acc
+    ORDER BY cnt DESC;
+
+-- Количество операций по бумагам фондового рынка    
+SELECT 
+		stock_market_securities.stock_security_code AS security, 
+		COUNT(*) AS cnt
+    FROM 
+		stock_market 
+	LEFT JOIN stock_market_securities
+	ON stock_market.sm_security = stock_market_securities.stock_security_id
+    GROUP BY security
+    ORDER BY cnt DESC;
+
+-- Операции по бумаге DZRD в хронологическом порядке
+SELECT 
+		stock_market_securities.stock_security_code AS security,
+		operation_type(stock_market.buy) AS operation, 
+		stock_market.volume,
+        stock_market.income AS date
+    FROM 
+		stock_market 
+	LEFT JOIN stock_market_securities
+	ON stock_market.sm_security = stock_market_securities.stock_security_id
+    HAVING stock_market_securities.stock_security_code = 'DZRD'
+    ORDER BY date;
+
+-- Триггеры автоматически проставляют сумму сделки на основании количества и цены за единицу
+DELIMITER //
+CREATE TRIGGER stock_market_price_set BEFORE INSERT ON stock_market
+FOR EACH ROW
+BEGIN
+	SET NEW.price = NEW.volume * NEW.unit_price;
+END//
+
+CREATE TRIGGER derivatives_market_price_set BEFORE INSERT ON derivatives_market
+FOR EACH ROW
+BEGIN
+	SET NEW.price = NEW.volume * NEW.unit_price;
+END//
+
+CREATE TRIGGER currency_market_price_set BEFORE INSERT ON currency_market
+FOR EACH ROW
+BEGIN
+	SET NEW.price = NEW.volume * NEW.unit_price;
+END//
+DELIMITER ;
+
+SET GLOBAL log_bin_trust_function_creators = 1;
+
+DROP FUNCTION IF EXISTS operation_type;
+DELIMITER //
+CREATE FUNCTION operation_type(buy BOOL)
+    RETURNS VARCHAR(7)
+    NOT DETERMINISTIC
+	BEGIN
+		IF buy THEN
+			RETURN "Покупка";
+		ELSE
+			RETURN "Продажа";
+        END IF;        
+	END //
+DELIMITER ;
+
