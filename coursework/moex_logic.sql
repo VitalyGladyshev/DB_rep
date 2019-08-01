@@ -6,13 +6,14 @@
 USE moex;
 
 -- Представление - операции на фондовом рынке
+DROP VIEW stock_market_ex;
 CREATE VIEW stock_market_ex AS
 SELECT 
     stock_market.stock_acc,
     CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
     stock_market_securities.stock_security_code AS security,
     operation_type(stock_market.buy) AS operation, 
-    CAST(stock_market.price AS DECIMAL(18,4)) AS price,
+    stock_market.price AS price,			-- CAST(stock_market.price AS DECIMAL(18,4))
     stock_market.income
 FROM 
 	stock_market 
@@ -25,14 +26,17 @@ ON profiles.client_id = clientele.id
 ORDER BY 
 	stock_market.income;
 
+SELECT * FROM stock_market_ex;
+
 -- Представление - операции на срочном рынке
+DROP VIEW derivatives_market_ex;
 CREATE VIEW derivatives_market_ex AS
 SELECT 
     derivatives_market.deriv_acc,
     CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
     derivatives_market_securities.deriv_security_code AS security,
     operation_type(derivatives_market.buy) AS operation, 
-    CAST(derivatives_market.price AS DECIMAL(18,4)) AS price,
+    derivatives_market.price AS price,
     derivatives_market.income
 FROM 
 	derivatives_market 
@@ -45,14 +49,17 @@ ON profiles.client_id = clientele.id
 ORDER BY 
 	derivatives_market.income;
 
+SELECT * FROM derivatives_market_ex;
+
 -- Представление - операции на валютном рынке
+DROP VIEW currency_market_ex;
 CREATE VIEW currency_market_ex AS
 SELECT 
     currency_market.curr_acc,
     CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
     currencies.currency_code AS security,
     operation_type(currency_market.buy) AS operation,
-    CAST(currency_market.price AS DECIMAL(18,4)) AS price,
+    currency_market.price AS price,
     currency_market.income
 FROM 
 	currency_market 
@@ -65,14 +72,17 @@ ON profiles.client_id = clientele.id
 ORDER BY 
 	currency_market.income;
 
+SELECT * FROM currency_market_ex;
+
 -- Представление - единая таблица всех операций
+DROP VIEW summary_table;
 CREATE VIEW summary_table AS
 SELECT 
 		stock_market.stock_acc,
 		CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
 		stock_market_securities.stock_security_code AS security,
 		operation_type(stock_market.buy) AS operation, 
-		CAST(stock_market.price AS DECIMAL(18,4)) AS price,
+		stock_market.price AS price,
 		stock_market.income AS date
 	FROM 
 		stock_market 
@@ -88,7 +98,7 @@ SELECT
 		CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
 		derivatives_market_securities.deriv_security_code AS security,
 		operation_type(derivatives_market.buy) AS operation, 
-		CAST(derivatives_market.price AS DECIMAL(18,4)) AS price,
+		derivatives_market.price AS price,
 		derivatives_market.income  AS date
 	FROM 
 		derivatives_market 
@@ -104,7 +114,7 @@ SELECT
 		CONCAT(profiles.lastname, ' ',  profiles.firstname) AS client, 
 		currencies.currency_code AS security,
 		operation_type(currency_market.buy) AS operation, 
-		CAST(currency_market.price AS DECIMAL(18,4)) AS price,
+		currency_market.price AS price,
 		currency_market.income AS date
 	FROM 
 		currency_market 
@@ -116,6 +126,8 @@ SELECT
 	ON profiles.client_id = clientele.id  
 	ORDER BY 
 		date;
+
+SELECT * FROM summary_table;
 
 -- Номер счёта на фондовом рынке совершивший больше всех покупок
 SELECT 
@@ -203,4 +215,3 @@ CREATE FUNCTION operation_type(buy BOOL)
         END IF;        
 	END //
 DELIMITER ;
-

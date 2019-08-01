@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS brokerage_accounts(
 	stock_acc SERIAL PRIMARY KEY,
     ind_inv BOOL,
     active_stat BOOL,
-    cash DOUBLE,
+    cash DECIMAL(18, 4),
     updated_at DATETIME DEFAULT NOW() ON UPDATE NOW(),
     leverage BOOL
 );
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS derivatives_accounts(
 	deriv_acc SERIAL PRIMARY KEY,
     ind_inv BOOL,
     active_stat BOOL,
-    cash DOUBLE,
+    cash DECIMAL(18, 4),
     updated_at DATETIME DEFAULT NOW() ON UPDATE NOW(),
     leverage BOOL,
     coverage INT
@@ -86,8 +86,8 @@ CREATE TABLE IF NOT EXISTS stock_market(
     volume INT UNSIGNED NOT NULL,	-- отрицательный volume это продажа
     buy BOOL,		-- TRUE - покупка, FALSE - продажа
     income DATETIME,
-    unit_price FLOAT NOT NULL,
-    price DOUBLE NOT NULL DEFAULT 0,
+    unit_price DECIMAL(18, 4) NOT NULL,
+    price DECIMAL(18, 4) NOT NULL DEFAULT 0,
     PRIMARY KEY (stock_acc, sm_security, income),
     CONSTRAINT stock_market_stock_acc_fk FOREIGN KEY (stock_acc) REFERENCES brokerage_accounts(stock_acc),
     CONSTRAINT stock_market_sm_security_fk FOREIGN KEY (sm_security) REFERENCES stock_market_securities(stock_security_id)
@@ -101,8 +101,8 @@ CREATE TABLE IF NOT EXISTS derivatives_market(
     volume INT UNSIGNED NOT NULL,	-- отрицательный volume это продажа
 	buy BOOL,		-- TRUE - покупка, FALSE - продажа
     income DATETIME,
-    unit_price FLOAT NOT NULL,
-    price DOUBLE NOT NULL DEFAULT 0,
+    unit_price DECIMAL(18, 4) NOT NULL,
+    price DECIMAL(18, 4) NOT NULL DEFAULT 0,
     PRIMARY KEY (deriv_acc, dm_security, income),
     CONSTRAINT derivatives_market_deriv_acc_fk FOREIGN KEY (deriv_acc) REFERENCES derivatives_accounts(deriv_acc),
     CONSTRAINT derivatives_market_dm_security_fk FOREIGN KEY (dm_security) REFERENCES derivatives_market_securities(deriv_security_id)
@@ -116,8 +116,8 @@ CREATE TABLE IF NOT EXISTS currency_market(
     volume INT UNSIGNED NOT NULL,	-- отрицательный volume это продажа
 	buy BOOL,		-- TRUE - покупка, FALSE - продажа
     income DATETIME,
-    unit_price FLOAT NOT NULL,
-    price DOUBLE NOT NULL DEFAULT 0,
+    unit_price DECIMAL(18, 4) NOT NULL,
+    price DECIMAL(18, 4) NOT NULL DEFAULT 0,
     PRIMARY KEY (curr_acc, currency, income),
     CONSTRAINT currency_market_curr_acc_fk FOREIGN KEY (curr_acc) REFERENCES currency_accounts(curr_acc),
     CONSTRAINT currency_market_currency_fk FOREIGN KEY (currency) REFERENCES currencies(currency_id)
